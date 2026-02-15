@@ -143,7 +143,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 9.75%;
+  height: 13.5%;
   background-color: #444;
   border-top: 15px solid #000;
   z-index: 10;
@@ -156,7 +156,7 @@
 
 .welcome-text {
   color: #ffec01;              /* your yellow accent color */
-  font-size: 4rem;
+  font-size: 4.625rem;
   font-weight: 700;            /* bold to match other headings */
   letter-spacing: 0.02em;
   text-align: center;
@@ -175,7 +175,7 @@
   top: 50%;
   transform: translateY(-50%);
   color: #ffec01;
-  font-size: 4rem;
+  font-size: 4.625rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -808,7 +808,7 @@ function scrollOrReset(container) {
   }
 
   if (!resetPending && total - Math.round(offset / 55) >= minScrollPoints) {
-    offset += 605;
+    offset += 550;
     container.style.transition = 'transform 1.5s cubic-bezier(0.75, 0, 0.25, 1)';
     container.style.transform = `translateY(-${offset}px)`;
     currentOffsets.set(container, offset);
