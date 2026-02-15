@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=3840, initial-scale=1.0"/>
+  <title>3840×1080 — 4 Vertical Panels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      color: #eee;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      width: 3840px;
+      height: 1080px;
+      background: #000;
+      display: flex;
+      margin: 0 auto;
+    }
+    .section {
+      flex: 1;
+      height: 1080px;
+      background: #000;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      font-weight: 700;
+    }
+    .section:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 2px;
+      height: 100%;
+      background: #444;
+      z-index: 2;
+    }
+    .platform-label { color: #ffec01; font-weight: 500; font-size: 2.8rem; letter-spacing: 0.02em; position: absolute; top: 2%; left: 3%; max-width: calc(100% - 40px); white-space: normal; overflow-wrap: break-word; line-height: 1.1;  z-index: 3;}
+    .scheduled { color: #ffffff; font-weight: 700; font-size: 4.2rem; letter-spacing: 0.02em; position: absolute; top: 8%; left: 3%; max-width: calc(100% - 40px); white-space: normal; overflow-wrap: break-word; line-height: 1.1; z-index: 3; }
+    .destination { color: #ffffff; font-weight: 700; font-size: 4.2rem; letter-spacing: 0.02em; position: absolute; top: 15.3%; left: 3%; max-width: calc(100% - 40px); white-space: normal; overflow-wrap: break-word; line-height: 1.1;  z-index: 3;}
+    .status-rectangle { position: absolute; top: 8.25%; right: 3%; width: 250px; height: 65px; background: #ffffff; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 2.5rem; color: #000000;  z-index: 3;}
+    .operator { color: #adadad; font-weight: 500; font-size: 2rem; letter-spacing: 0.02em; position: absolute; top: 30%; left: 3%; max-width: calc(100% - 40px); white-space: normal; overflow-wrap: break-word; line-height: 1.1; z-index: 3; }
+    .coaches { color: #ffec01; font-weight: 500; font-size: 2rem; letter-spacing: 0.02em; position: absolute; top: 30%; right: 3%; max-width: calc(100% - 40px); white-space: normal; overflow-wrap: break-word; line-height: 1.1; z-index: 3; }
+
+    .calling-container {
+      position: absolute;
+      top: 34%;
+      left: 3%;
+      right: 3%;
+      height: 50%;
+      background: #000;
+      border: 0px solid #ffffff;
+      padding: 0rem 0;
+    }
+
+    /* New styles for calling points header */
+.calling-header {
+  position: relative;
+  margin-bottom: 0rem;
+  padding: 0 0.25rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+
+.calling-point {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 2.75rem;
+  line-height: 1.25;
+
+  width: 71%;          /* leaves more than 15% free on right */
+  margin-left: 5%;     /* keeps same left spacing */
+  
+  white-space: nowrap;         /* prevent wrapping */
+  overflow: hidden;            /* hide overflow */
+  text-overflow: ellipsis;     /* show ellipsis when text is too long */
+}
+
+.calling-time {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 2.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+
+  position: absolute;
+  right: 0rem;
+  top: 0;
+  white-space: nowrap;
+}
+.ruler {
+  position: absolute;
+  left: 0;
+  top: 1rem; /* adjust if needed to vertically center the circle */
+  width: 22.5px;
+  height: auto;
+  aspect-ratio: 1; /* ensures circle stays proportional */
+  background-color: #000000;
+  border: 4.5px solid #ffffff;
+  border-radius: 50%; /* makes it a circle */
+  z-index: 2;
+}
+
+  .calling-line {
+    position: absolute;
+    left: 1.375%;
+    top: 0;
+    width: 6px;
+    background-color: #ffffff;
+  }
+
+.top-red-rect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 34%;
+  background-color: black;
+  z-index: 2; /* behind main content */
+}
+
+.section {
+  transition: opacity 0.25s ease;
+}
+
+.global-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 9.75%;
+  background-color: #444;
+  border-top: 15px solid #000;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.welcome-text {
+  color: #ffec01;              /* your yellow accent color */
+  font-size: 4rem;
+  font-weight: 700;            /* bold to match other headings */
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 90%;              /* prevent overflow on smaller viewports if needed */
+}
+
+#station-name {
+  color: #ffec01;
+  font-weight: 700;
+}
+
+.time-display {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffec01;
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
+  display: flex;
+  gap: 0.4em;               /* space between boxes */
+  pointer-events: none;
+}
+
+.time-display.left  { left: 12.5%; }
+.time-display.right { right: 12.5%; }   /* ← better than left: 87.5% for right-side symmetry */
+
+.time-digit {
+  /* Make each one look like a centered text box */
+  width: 0.3em;             /* fixed width — adjust this to control box size */
+  height: 1.3em;            /* slightly taller than the font for breathing room */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-sizing: border-box;
+  text-align: center;
+  min-width: unset;         /* override your previous min-width */
+}
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Inside first section -->
+  <div class="section">
+    <!-- Top red rectangle -->
+    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <!-- First Calling Point -->
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <!-- Bottom red rectangle -->
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+
+  <div class="section">
+    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+
+  <div class="section">
+    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+  <div class="section">
+    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+
+  <div class="section">
+    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+
+  <div class="section">    <div class="top-red-rect"></div>
+
+    <div class="platform-label"></div>
+    <div class="scheduled"></div>
+    <div class="status-rectangle"></div>
+    <div class="destination"></div>
+    <div class="operator"></div>
+    <div class="coaches"></div>
+
+    <div class="calling-container">
+      <div class="calling-header">
+        <div class="calling-point"></div>
+        <div class="calling-time"></div>
+        <div class="ruler"></div>
+      </div>
+    </div>
+
+    <div class="horizontal-line"></div>
+
+    <div class="bottom-red-rect"></div>
+    <div class="no-service-text" style="
+    position: absolute;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ffffff;
+    display: none; /* hidden by default */
+    z-index: 3;
+">Please check timetable<br>for services.</div>
+  </div>
+</div>
+<div class="global-bottom-bar">
+  <!-- Two identical time displays -->
+  <div class="time-display left"  id="time-left"></div>
+  <div class="time-display right" id="time-right"></div>
+
+  <!-- Centered welcome message stays as before -->
+  <div class="welcome-text">
+    Welcome to <span id="station-name"></span> Station
+  </div>
+</div>
+</body>
+
+<script>
+
+let previousServices = [];
+const POLL_INTERVAL = 5000;
+const API_URL = "https://huxley2.azurewebsites.net/departures/ECR/6?accessToken=e48245fd-c8d4-46b5-87ef-60e71665e6b6&expand=true";
+// Default fallback if nothing saved
+const DEFAULT_CRS = 'ECR';
+const API_BASE = `https://huxley2.azurewebsites.net/departures/`;
+const ACCESS_TOKEN = 'e48245fd-c8d4-46b5-87ef-60e71665e6b6';
+
+// Try to load previously used CRS from localStorage
+let currentCrs = localStorage.getItem('pids-last-crs') || DEFAULT_CRS;
+
+// Build the active URL once at start
+let currentApiUrl = `${API_BASE}${currentCrs}/6?accessToken=${ACCESS_TOKEN}&expand=true`;
+window.currentApiUrl = API_URL;
+
+async function fetchServices() {
+try {
+    const res = await fetch(currentApiUrl);
+    const data = await res.json();
+
+    const stationNameEl = document.getElementById('station-name');
+    if (stationNameEl && data.locationName) {
+      stationNameEl.textContent = data.locationName;
+    }
+
+
+    const trainServices = data.trainServices || [];
+    const busServices = data.busServices || [];
+
+    const allServices = [
+      ...trainServices.map(s => ({ ...s, type: 'train' })),
+      ...busServices.map(s => ({ ...s, type: 'bus' }))
+    ];
+
+    allServices.sort((a, b) => {
+      if (!a.std) return 1;
+      if (!b.std) return -1;
+      return a.std.localeCompare(b.std);
+    });
+
+    handleUpdates(allServices);
+
+  } catch (err) {
+    console.error("API Error:", err);
+    const stationNameEl = document.getElementById('station-name');
+    if (stationNameEl) stationNameEl.textContent = '';
+  }
+}
+
+function handleUpdates(newServices) {
+  const sections = document.querySelectorAll('.section');
+  const sectionCount = sections.length;
+
+  let firstAffectedIndex = -1;
+
+  // ── Step 1: Find earliest position where something meaningfully changed ──
+  for (let i = 0; i < sectionCount; i++) {
+    const oldSvc = previousServices[i];
+    const newSvc = newServices[i];
+
+    // Service slot became empty / appeared → major shift
+    if (!!oldSvc !== !!newSvc) {
+      if (firstAffectedIndex === -1) firstAffectedIndex = i;
+      continue;
+    }
+
+    // Both exist → compare identity + major fields
+    if (oldSvc && newSvc) {
+      const destOld = getDestinationString(oldSvc);
+      const destNew = getDestinationString(newSvc);
+
+      const sameService =
+        destOld === destNew &&
+        (oldSvc.std || '') === (newSvc.std || '') &&
+        (oldSvc.etd || '') === (newSvc.etd || '');
+
+      // Different service now in this slot, or major timetable change
+      if (!sameService ||
+          (oldSvc.platform || '') !== (newSvc.platform || '') ||
+          oldSvc.type !== newSvc.type) {
+        if (firstAffectedIndex === -1) firstAffectedIndex = i;
+      }
+    }
+  }
+
+  // ── Step 2: Decide update style ────────────────────────────────────────
+  if (firstAffectedIndex === -1) {
+    // Only very minor changes (e.g. eta update only) → instant
+    for (let i = 0; i < sectionCount; i++) {
+      if (servicesChanged(previousServices[i], newServices[i])) {
+        renderService(sections[i], newServices[i]);
+      }
+    }
+  } else {
+    // List shift or major change → cascade animation from first affected
+    for (let i = firstAffectedIndex; i < sectionCount; i++) {
+      const section = sections[i];
+      const delay = (i - firstAffectedIndex) * 125; // 0.125 s stagger
+
+      setTimeout(() => {
+        section.style.transition = 'opacity 0.4s ease';
+        section.style.opacity = '0';
+
+        setTimeout(() => {
+          renderService(section, newServices[i] || null);  // allow null = no service
+
+          const container = section.querySelector('.calling-container');
+          if (container) {
+            container.style.transition = 'none';
+            container.style.transform = 'translateY(0px)';
+            // currentOffsets?.set(container, 0);
+            // resetStates?.set(container, false);
+          }
+
+          setTimeout(() => {
+            section.style.opacity = '1';
+          }, 250);
+
+        }, 400); // after fade-out completes
+
+      }, delay);
+    }
+  }
+
+  previousServices = newServices.slice(); // shallow copy is fine here
+}
+
+// ────────────────────────────────────────────────
+// Main rendering function — called on init + updates
+// ────────────────────────────────────────────────
+function renderService(section, service) {
+  const platformEl      = section.querySelector('.platform-label');
+  const scheduledEl     = section.querySelector('.scheduled');
+  const destinationEl   = section.querySelector('.destination');
+  const statusEl        = section.querySelector('.status-rectangle');
+  const operatorEl      = section.querySelector('.operator');
+  const coachesEl       = section.querySelector('.coaches');
+  const callingContainer = section.querySelector('.calling-container');
+  const noServiceEl     = section.querySelector('.no-service-text');
+
+  callingContainer.innerHTML = '';
+
+  if (!service) {
+    scheduledEl.style.display = 'none';
+    destinationEl.style.display = 'none';
+    statusEl.style.display = 'none';
+    operatorEl.style.display = 'none';
+    coachesEl.style.display = 'none';
+    platformEl.style.display = 'none';
+    callingContainer.style.display = 'none';
+    if (noServiceEl) noServiceEl.style.display = 'block';
+    return;
+  }
+
+  scheduledEl.style.display = 'block';
+  destinationEl.style.display = 'block';
+  statusEl.style.display = 'flex';
+  operatorEl.style.display = 'block';
+  coachesEl.style.display = 'block';
+  platformEl.style.display = 'block';
+  callingContainer.style.display = 'block';
+  if (noServiceEl) noServiceEl.style.display = 'none';
+
+  // Platform
+  if (service.type === 'bus') {
+    platformEl.textContent = 'Bus Replacement';
+    platformEl.style.color = '#31c8fe';
+    scheduledEl.textContent = (service.std || '') + ' (Bus)';
+  } else {
+    platformEl.textContent = service.platform ? `Platform ${service.platform}` : 'Platform -';
+    platformEl.style.color = '#ffec01';
+    scheduledEl.textContent = service.std || '';
+  }
+
+  // Destination
+  let destinationText = '';
+  let viaValue = null;
+  if (service.destination?.length > 0) {
+    const destObj = service.destination[0];
+    destinationText = destObj.locationName || '';
+    destinationEl.textContent = destinationText;
+
+    if (destObj.via?.trim()) {
+      viaValue = destObj.via.trim();
+    }
+  } else {
+    destinationEl.textContent = '';
+  }
+
+  // Status / ETD
+  if (service.etd) {
+    const etd = service.etd.trim().toLowerCase();
+    if (etd === 'on time') {
+      statusEl.textContent = 'On time';
+      statusEl.style.backgroundColor = '#ffffff';
+      statusEl.style.color = '#000000';
+    } else if (!isNaN(parseInt(etd))) {
+      statusEl.textContent = 'Exp ' + service.etd;
+      statusEl.style.backgroundColor = '#e46a14';
+      statusEl.style.color = '#ffffff';
+    } else if (etd === 'delayed') {
+      statusEl.textContent = 'Delayed';
+      statusEl.style.backgroundColor = '#e46a14';
+      statusEl.style.color = '#ffffff';
+    } else if (etd === 'cancelled') {
+      statusEl.textContent = 'Cancelled';
+      statusEl.style.backgroundColor = '#f7002c';
+      statusEl.style.color = '#ffffff';
+    } else {
+      statusEl.textContent = service.etd;
+      statusEl.style.backgroundColor = '#ffffff';
+      statusEl.style.color = '#000000';
+    }
+  } else {
+    statusEl.textContent = '';
+  }
+
+  // Operator + coaches
+  let op = service.operator || '';
+  if (op === 'West Midlands Trains') op = 'London Northwestern Railway';
+  operatorEl.textContent = op;
+  operatorEl.style.color = '#adadad';
+  coachesEl.textContent = service.length ? `${service.length} carriages` : '';
+
+  // Via text (simple inline for now — no flashing)
+  if (viaValue) {
+    destinationEl.innerHTML = `${destinationText}<br><span style="font-size:2.75rem; color:#ffffff; line-height:1;">${viaValue}</span>`;
+  }
+
+  // ── Calling points ───────────────────────────────────────────────────────
+  if (!service.subsequentCallingPoints?.[0]?.callingPoint?.length) return;
+
+  const points = service.subsequentCallingPoints[0].callingPoint;
+  const isCancelled = service.etd?.toLowerCase() === 'cancelled';
+  const hasRunning = points.some(p => !p.et || p.et.toLowerCase() !== 'cancelled');
+  const lineColor = (isCancelled || !hasRunning) ? '#808080' : '#ffffff';
+
+  const line = document.createElement('div');
+  line.className = 'calling-line';
+  line.style.left = '1.375%';
+  line.style.top = '0';
+  line.style.width = '6px';
+  line.style.height = '100%';
+  line.style.backgroundColor = lineColor;
+  callingContainer.appendChild(line);
+
+  points.forEach(point => {
+    const header = document.createElement('div');
+    header.className = 'calling-header';
+
+    const cancelled = point.et?.toLowerCase() === 'cancelled';
+
+    const pointEl = document.createElement('div');
+    pointEl.className = 'calling-point';
+    pointEl.textContent = point.locationName;
+    pointEl.style.color = cancelled ? '#808080' : '#ffffff';
+
+    const timeEl = document.createElement('div');
+    timeEl.className = 'calling-time';
+    timeEl.textContent = cancelled ? 'Cancelled' : (point.et && point.et.toLowerCase() !== 'on time' ? point.et : point.st || '');
+    timeEl.style.color = cancelled ? '#808080' : '#ffffff';
+
+    const circle = document.createElement('div');
+    circle.className = 'ruler';
+    circle.style.borderColor = cancelled ? '#808080' : '#ffffff';
+    circle.style.backgroundColor = '#000';
+
+    header.append(pointEl, timeEl, circle);
+    callingContainer.appendChild(header);
+  });
+
+  // Spine stop + rectangle + bold last active
+  const headers = Array.from(callingContainer.querySelectorAll('.calling-header'));
+  let lastActiveIdx = headers.length - 1;
+  for (let i = headers.length - 1; i >= 0; i--) {
+    if (!headers[i].querySelector('.calling-time').textContent.includes('Cancelled')) {
+      lastActiveIdx = i;
+      break;
+    }
+  }
+
+  const target = headers[lastActiveIdx];
+  const targetCancelled = target.querySelector('.calling-time').textContent.includes('Cancelled');
+
+  requestAnimationFrame(() => {
+    const tRect = target.getBoundingClientRect();
+    const cRect = callingContainer.getBoundingClientRect();
+    const stopY = (tRect.top + tRect.height / 2) - cRect.top - 10;
+    line.style.height = `${Math.max(0, stopY)}px`;
+
+    const ruler = target.querySelector('.ruler');
+    if (ruler) {
+      const rect = document.createElement('div');
+      rect.style.position = 'absolute';
+      rect.style.left = `${line.offsetLeft - 7.5}px`;
+      rect.style.top = `${ruler.offsetTop + ruler.offsetHeight / 2 - 22.5}px`;
+      rect.style.width = `${line.offsetWidth + 15}px`;
+      rect.style.height = '45px';
+      rect.style.borderRadius = '4px';
+      rect.style.zIndex = '2';
+      rect.style.backgroundColor = targetCancelled ? '#808080' : '#ffffff';
+      ruler.remove();
+      target.appendChild(rect);
+    }
+
+    if (!isCancelled && lastActiveIdx >= 0) {
+      const lp = target.querySelector('.calling-point');
+      const lt = target.querySelector('.calling-time');
+      if (lp) lp.style.fontWeight = '700';
+      if (lt) lt.style.fontWeight = '700';
+    }
+  });
+}
+
+// Helpers
+function getDestinationString(s) {
+  if (!s?.destination?.[0]) return '';
+  const d = s.destination[0];
+  let str = d.locationName || '';
+  if (d.via?.trim()) str += ` via ${d.via.trim()}`;
+  return str;
+}
+
+function servicesChanged(oldS, newS) {
+  if (!oldS && !newS) return false;
+  if (!oldS || !newS) return true;
+
+  if (getDestinationString(oldS) !== getDestinationString(newS)) return true;
+  if ((oldS.std || '') !== (newS.std || '')) return true;
+  if ((oldS.etd || '') !== (newS.etd || '')) return true;
+  if ((oldS.platform || '') !== (newS.platform || '')) return true;
+  if ((oldS.operator || '') !== (newS.operator || '')) return true;
+  if ((oldS.length || '') !== (newS.length || '')) return true;
+
+  const oldPoints = oldS.subsequentCallingPoints?.[0]?.callingPoint || [];
+  const newPoints = newS.subsequentCallingPoints?.[0]?.callingPoint || [];
+
+  if (oldPoints.length !== newPoints.length) return true;
+
+  for (let i = 0; i < oldPoints.length; i++) {
+    const o = oldPoints[i];
+    const n = newPoints[i];
+    if (o.locationName !== n.locationName ||
+        o.st !== n.st ||
+        o.et !== n.et ||
+        (o.et || '').toLowerCase() === 'cancelled' !== (n.et || '').toLowerCase() === 'cancelled') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// ── Scrolling logic (kept as-is from your code) ─────────────────────────────
+const fadeDuration = 250;
+const minScrollPoints = 12;
+let currentOffsets = new Map();
+let resetStates = new Map();
+
+function scrollOrReset(container) {
+  const headers = container.querySelectorAll('.calling-header');
+  const total = headers.length;
+
+  if (!currentOffsets.has(container)) currentOffsets.set(container, 0);
+  if (!resetStates.has(container)) resetStates.set(container, false);
+
+  let offset = currentOffsets.get(container);
+  let resetPending = resetStates.get(container);
+
+  if (total < minScrollPoints) {
+    if (resetPending) {
+      container.style.transition = `opacity ${fadeDuration}ms`;
+      container.style.opacity = 0;
+      setTimeout(() => {
+        currentOffsets.set(container, 0);
+        container.style.transform = 'translateY(0px)';
+        container.style.opacity = 1;
+        resetStates.set(container, false);
+      }, fadeDuration);
+    }
+    return;
+  }
+
+  if (!resetPending && total - Math.round(offset / 55) >= minScrollPoints) {
+    offset += 605;
+    container.style.transition = 'transform 1.5s cubic-bezier(0.75, 0, 0.25, 1)';
+    container.style.transform = `translateY(-${offset}px)`;
+    currentOffsets.set(container, offset);
+
+    if (total - Math.round(offset / 55) < minScrollPoints) {
+      resetStates.set(container, true);
+    }
+  } else if (resetPending) {
+    container.style.transition = `opacity ${fadeDuration}ms`;
+    container.style.opacity = 0;
+    setTimeout(() => {
+      currentOffsets.set(container, 0);
+      container.style.transform = 'translateY(0px)';
+      container.style.opacity = 1;
+      resetStates.set(container, false);
+    }, fadeDuration);
+  }
+}
+
+setInterval(() => {
+  const now = new Date();
+  if (now.getSeconds() % 5 === 0) {
+    document.querySelectorAll('.calling-container').forEach(scrollOrReset);
+  }
+}, 1000);
+
+// ── Start ────────────────────────────────────────────────────────────────
+fetchServices();
+setInterval(fetchServices, POLL_INTERVAL);
+
+// =============================================
+//    BOTTOM BAR CLICK → CHANGE STATION (with persistence)
+// =============================================
+
+const bottomBar = document.querySelector('.global-bottom-bar');
+
+if (bottomBar) {
+  bottomBar.style.cursor = 'pointer';
+  bottomBar.title = 'Click to change station';
+
+  bottomBar.addEventListener('click', () => {
+    const input = prompt(
+      "Enter new CRS code (3 letters)\n" +
+      "Examples: PAD, EUS, MAN, BHM, LIV, ECR...\n\n" +
+      `Current: ${currentCrs}`,
+      currentCrs
+    );
+
+    if (!input) return; // cancelled
+
+    const newCrs = input.trim().toUpperCase();
+
+    if (newCrs.length !== 3 || !/^[A-Z]{3}$/.test(newCrs)) {
+      alert("Please enter a valid 3-letter CRS code");
+      return;
+    }
+
+    // Save to localStorage
+    localStorage.setItem('pids-last-crs', newCrs);
+
+    // Update global variables
+    currentCrs = newCrs;
+    currentApiUrl = `${API_BASE}${currentCrs}/6?accessToken=${ACCESS_TOKEN}&expand=true`;
+
+    // Visual feedback
+    bottomBar.style.backgroundColor = '#555';
+    setTimeout(() => {
+      bottomBar.style.backgroundColor = '#444';
+    }, 300);
+
+    // Reload data immediately
+    fetchServices();
+  });
+}
+
+function updateTimeDisplays() {
+  const now = new Date();
+  const hh = now.getHours()  .toString().padStart(2, '0');
+  const mm = now.getMinutes().toString().padStart(2, '0');
+  const ss = now.getSeconds().toString().padStart(2, '0');
+
+  const timeString = `${hh}:${mm}:${ss}`;           // e.g. "14:35:42"
+  const characters = timeString.split('');          // ['1','4',':','3','5',':','4','2']
+
+  const html = characters
+    .map(char => `<span class="time-digit">${char}</span>`)
+    .join('');
+
+  // Both displays get exactly the same content
+  document.getElementById('time-left').innerHTML  = html;
+  document.getElementById('time-right').innerHTML = html;
+}
+
+// Run once immediately + every second
+updateTimeDisplays();
+setInterval(updateTimeDisplays, 1000);
+</script>
+
+</body>
+</html>
